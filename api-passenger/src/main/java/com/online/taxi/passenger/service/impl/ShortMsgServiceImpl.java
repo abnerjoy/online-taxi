@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -25,11 +27,14 @@ public class ShortMsgServiceImpl implements ShortMsgService {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	@Autowired
+	private SmsClient smsClient;
+	
 	@Override
 	public ResponseResult send(String phoneNumber, String code) {
 		System.out.println("手机号和验证码："+phoneNumber+","+code);
-		
-		String url = "http://service-sms/send/alisms-template";
+		String serviceName = "service-sms";
+		String url = "http://"+serviceName+"/send/alisms-template";
 		SmsSendRequest smsSendRequest = new SmsSendRequest();
 		String[] phoneNumbers = new String[] {phoneNumber};
 		smsSendRequest.setReceivers(phoneNumbers);
@@ -46,9 +51,12 @@ public class ShortMsgServiceImpl implements ShortMsgService {
 		smsSendRequest.setData(data);
 		
 		//ribbon调用
-		ResponseEntity<ResponseResult> resultEntity = restTemplate.postForEntity(url, smsSendRequest, ResponseResult.class);
-		ResponseResult result = resultEntity.getBody();
-
+//		ResponseEntity<ResponseResult> resultEntity = restTemplate.postForEntity(url, smsSendRequest, ResponseResult.class);
+//		ResponseResult result = resultEntity.getBody();
+		
+		//feign调用
+		ResponseResult result = smsClient.sendSms(smsSendRequest);
+		
 		System.out.println("调用短信服务返回的结果"+JSONObject.fromObject(result));
 		return result;
 	}
