@@ -28,21 +28,24 @@ eureka:
       
     
 feign:
-#  #开启feignhystrix#  hystrix:#    enabled: true  
+  compression:    request:      mime-types:      - text/xml
+      min-request-size: 2048
+  #开启feignhystrix  hystrix:    enabled: true  
+
   client: 
     config:  
       service-valuation: 
-      
+        
         request-interceptors:        - com.online.taxi.passenger.feign.interceptor.MyBasicAuthRequestInterceptor
         connect-timeout: 5000
         read-timeout: 5000
         logger-level: basic
         
-#service-sms: 
-#  ribbon: 
-#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRuleservice-valuation: 
+service-sms: 
   ribbon: 
-    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule#service-valuation: 
+#  ribbon: 
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
 ribbon:  eager-load:
     enabled: true    clients:    - SERVICE-SMS
 

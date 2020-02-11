@@ -1,53 +1,28 @@
+#单节点
 #应用名称及验证账号
 spring: 
   application: 
     name: eureka
-    
   security: 
     user: 
       name: root
       password: root
-
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  server: 
+    #关闭自我保护
+    enable-self-preservation: false
+    #清理间隔时间
+    eviction-interval-timer-in-ms: 5000
+logging:  level:    root: info
 ---
 spring:
   profiles: 7900
 server: 
   port: 7900
 eureka:
-  instance:    prefer-ip-address: true
-    ip-address: 192.168.0.103
-    hostname: eureka-7900
   client:
-    register-with-eureka: true
-    fetch-registry: true
     service-url:                      
-      defaultZone: http://root:root@localhost:7900/eureka/---
-spring:  profiles: 7901
-server: 
-  port: 7901
-eureka:  instance:
-    prefer-ip-address: true
-    ip-address: 127.0.0.1    hostname: eureka-7901  
-  client:
-         #设置服务注册中心的URL
-    service-url:                      
-      defaultZone: http://root:root@eureka-7902:7902/eureka/---    
-spring:
-  profiles: 7902
-server: 
-  port: 7902
-eureka:
-  instance:
-    hostname: eureka-7902  
-  client:
-       #设置服务注册中心的URL
-    service-url:                      
-      defaultZone: http://root:root@eureka-7901:7901/eureka/
----
-spring:
-  profiles: 7903
-server: 
-  port: 7903
-eureka:
-  instance:
-    hostname: eureka-7903
+      defaultZone: http://root:root@localhost:7900/eureka/
